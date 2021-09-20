@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: words-db
+  name: words-db-svc
   labels:
     app: words-db
 spec:
@@ -15,7 +15,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: words-db
+  name: words-db-deploy
   labels:
     app: words-db
 spec:
@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: harbor.ocplab.cn/k8ssamples/k8s-words-db:v1.0
+        image: garycncf/words-demo-db:latest
         ports:
         - containerPort: 5432
           name: db
@@ -37,7 +37,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: words-api
+  name: words-api-svc
   labels:
     app: words-api
 spec:
@@ -51,7 +51,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: words-api
+  name: words-api-deploy
   labels:
     app: words-api
 spec:
@@ -66,10 +66,10 @@ spec:
     spec:
       containers:
       - name: api
-        image: harbor.ocplab.cn/k8ssamples/k8s-words-api:v1.0
+        image: garycncf/words-demo-api:latest
         env:
           - name: WORDS_DB_SERVICE
-            value: words-db
+            value: words-db-svc
         ports:
         - containerPort: 8080
           name: api
@@ -77,7 +77,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: words-web
+  name: words-web-svc
   labels:
     app: words-web
 spec:
@@ -92,7 +92,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: words-web
+  name: words-web-deploy
   labels:
     app: words-web
 spec:
@@ -106,10 +106,10 @@ spec:
     spec:
       containers:
       - name: words-web
-        image: harbor.ocplab.cn/k8ssamples/k8s-words-web:v1.0
+        image: garycncf/words-demo-web:latest
         env:
           - name: WORDS_API_SERVICE
-            value: words-api
+            value: words-api-svc
         ports:
         - containerPort: 80
           name: words-web
