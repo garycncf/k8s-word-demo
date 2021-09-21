@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: garycncf/words-demo-db:latest
+        image: garycncf/words-demo-db:version2
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -94,7 +94,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: garycncf/words-demo-api:latest
+        image: garycncf/words-demo-api:version2
         env:
           - name: WORDS_DB_SERVICE
             value: words-db-svc
@@ -153,7 +153,7 @@ spec:
     spec:
       containers:
       - name: words-web
-        image: garycncf/words-demo-web:latest
+        image: garycncf/words-demo-web:version2
         env:
           - name: WORDS_API_SERVICE
             value: words-api-svc
