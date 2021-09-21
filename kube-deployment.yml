@@ -41,7 +41,7 @@ spec:
     spec:
       containers:
       - name: db
-        image: harbor.ocplab.cn/garycncf/words-demo-db:version2
+        image: garycncf/words-demo-db:version2
         imagePullPolicy: Always
         env:
         - name: POSTGRES_DB
@@ -98,7 +98,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: harbor.ocplab.cn/garycncf/words-demo-api:version2
+        image: garycncf/words-demo-api:version2
         imagePullPolicy: Always
         env:
           - name: WORDS_DB_SERVICE
@@ -162,7 +162,7 @@ spec:
     spec:
       containers:
       - name: words-web
-        image: harbor.ocplab.cn/garycncf/words-demo-web:version2
+        image: garycncf/words-demo-web:version2
         imagePullPolicy: Always
         env:
           - name: WORDS_API_SERVICE
