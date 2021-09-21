@@ -142,7 +142,6 @@ spec:
       name: words-web
   selector:
     app: words-web
-  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
