@@ -1,4 +1,15 @@
 apiVersion: v1
+kind: Secret
+metadata:  
+  name: words-db-secret
+  labels:
+    app: words-db
+type: Opaque
+data:  
+  username: cG9zdGdyZXMK
+  password: cmVkaGF0Cg==
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: words-db-svc
@@ -30,9 +41,26 @@ spec:
       containers:
       - name: db
         image: garycncf/words-demo-db:latest
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: words-db-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: words-db-secret
+              key: password        
         ports:
         - containerPort: 5432
-          name: db
+          name: db 
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: db-data
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -70,9 +98,29 @@ spec:
         env:
           - name: WORDS_DB_SERVICE
             value: words-db-svc
+          - name: WORDS_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: words-db-secret
+                key: username
+          - name: WORDS_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: words-db-secret
+                key: password
         ports:
         - containerPort: 8080
           name: api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: words-web-cm
+  labels:
+    app: words-web
+data:
+  cluster: mycluster
+  version: version2
 ---
 apiVersion: v1
 kind: Service
@@ -109,6 +157,16 @@ spec:
         env:
           - name: WORDS_API_SERVICE
             value: words-api-svc
+          - name: APP_CLUSTER
+            valueFrom:
+              configMapKeyRef:
+                name: words-web-cm
+                key: cluster
+          - name: APP_VERSION
+            valueFrom:
+              secretKeyRef:
+                name: words-web-cm
+                key: version
         ports:
         - containerPort: 80
           name: words-web

@@ -21,8 +21,10 @@ public class Main {
     }
 
     private static String randomWord(String table) {
-        String DB = System.getenv("WORDS_DB_SERVICE");
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://" + DB + ":5432/postgres", "postgres", "")) {
+        String DB_HOST = System.getenv("WORDS_DB_SERVICE");
+        String DB_USERNAME = System.getenv("WORDS_DB_USER");
+        String DB_PASSWORD = System.getenv("WORDS_DB_PASSWORD");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://" + DB_HOST + ":5432/postgres", DB_USERNAME, DB_PASSWORD)) {
             try (Statement statement = connection.createStatement()) {
                 try (ResultSet set = statement.executeQuery("SELECT word FROM " + table + " ORDER BY random() LIMIT 1")) {
                     while (set.next()) {
