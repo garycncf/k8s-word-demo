@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  db:
+    image: quay.io/garycncf/words-demo-db:version1
+    container_name: db
+    restart: unless-stopped
+    networks:
+      - net
+    dns_search: .
+  api:
+    image: quay.io/garycncf/words-demo-api:version1
+    container_name: api
+    environment:
+      WORDS_DB_SERVICE: db
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    networks:
+      - net
+    dns_search: .
+    depends_on:
+      - db
+  web:
+    image: quay.io/garycncf/words-demo-web:version1
+    container_name: web
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - NET_BIND_SERVICE
+    environment:
+      WORDS_API_SERVICE: api
+    networks:
+      - net
+    dns_search: .
+    depends_on:
+      - api
+    ports:
+      - 880:80
+networks:
+  net:
+    external: false
